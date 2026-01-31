@@ -1,0 +1,29 @@
+name: Daily AI News Push
+
+on:
+  schedule:
+    # 每天北京时间早上8点（UTC 0点）
+    - cron: "0 0 * * *"
+  workflow_dispatch:  # 允许手动点击运行
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 下载代码
+        uses: actions/checkout@v3
+      
+      - name: 安装Python环境
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: 安装邮件库
+        run: pip install yagmail
+      
+      - name: 执行发送邮件
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+        run: python send_email.py
